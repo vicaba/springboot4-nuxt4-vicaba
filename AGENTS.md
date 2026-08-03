@@ -2,7 +2,7 @@
 
 ## Overview
 
-Spring Boot 4 (WebFlux, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, packaged together into a single Docker image with Gradle managing the full build pipeline.
+Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, packaged together into a single Docker image with Gradle managing the full build pipeline.
 
 ---
 
@@ -70,15 +70,15 @@ docker build -t vicaba-app .
 .
 ├── src/
 │   ├── main/kotlin/com/example/demo/
-│   │   ├── config/          # Spring beans: routing, CORS, SPA fallback, app properties
-│   │   ├── handler/         # WebFlux request handlers (one handler per resource)
+│   │   ├── config/          # Spring beans: CORS (WebMvcConfig), SPA fallback controller, app properties
+│   │   ├── handler/         # MVC handlers/controllers (HelloController, IndexHandler)
 │   │   ├── logger/          # Logger extension (Kotlin extension fun logger())
 │   │   └── DemoApplication.kt
 │   ├── main/resources/
 │   │   ├── application.properties       # Server port, API base path, CORS, index file
-│   │   └── application-dev.properties   # Dev overrides (e.g. CORS allowed origins)
+│   │   └── application-dev.properties   # Dev overrides (e.g. debug, devtools)
 │   ├── test/kotlin/         # Unit tests using Kotest + MockK
-│   └── it/kotlin/           # Integration tests using Kotest + Spring test context
+│   └── it/kotlin/           # Integration tests using Kotest + Spring test context + MockMvc
 ├── frontend/
 │   ├── app/                 # Nuxt source: pages/, components/, layouts/, app.vue
 │   ├── public/              # Static assets served at root
@@ -89,8 +89,9 @@ docker build -t vicaba-app .
 └── Dockerfile               # Multi-stage: node frontend → JDK backend → distroless runtime
 ```
 
-- **New API endpoints**: add a handler in `handler/`, register the route in `config/RoutingConfig.kt`.
+- **New API endpoints**: add a `@RestController` in `handler/`, annotate with `@RequestMapping("${application.api-base-path}")`.
 - **New config properties**: extend `ApplicationProperties` in `config/ApplicationConfig.kt` and add keys to `application.properties`.
+- **SPA fallback & static files**: handled by `SpaFallbackConfig` (`@Controller @GetMapping("/**")`). It serves index.html for SPA routes and static files from `classpath:/static/` for file-extension paths.
 - **Frontend pages/components**: work only inside `frontend/app/`.
 
 ---
@@ -98,11 +99,12 @@ docker build -t vicaba-app .
 ## Code Style & Rules
 
 - **Kotlin style**: enforced by `ktlint` via `spotlessApply`. Run before committing.
-- **Async style**: all WebFlux handler methods must be `suspend` and use coroutine-aware APIs (`coRouter`, `bodyValueAndAwait`, etc.). Do not use blocking calls.
-- **Handler pattern**: handlers are `@Component` classes with `suspend fun (ServerRequest): ServerResponse`. No `@RestController` or MVC annotations.
+- **Controller pattern**: API controllers are `@RestController` classes in `handler/`. Non-API/SPA fallback lives in `config/SpaFallbackConfig.kt`. No functional router DSL.
+- **No blocking restriction**: this is a standard Spring MVC (servlet/Tomcat) app; regular synchronous blocking I/O is acceptable and expected.
 - **Logging**: use the project's `logger` extension (`com.example.demo.logger.logger`) instead of importing a logger directly.
 - **Properties binding**: use `@ConfigurationProperties` data classes, not `@Value`. Prefix is `application`.
-- **Test framework**: Kotest (not JUnit assertions). Unit tests go in `src/test/kotlin`, integration tests in `src/it/kotlin`.
+- **API base path**: controllers should use `@RequestMapping("\${application.api-base-path}")` instead of hard-coding `/api`.
+- **Test framework**: Kotest (not JUnit assertions). Unit tests in `src/test/kotlin`, integration tests in `src/it/kotlin` (use `MockMvc` via `@AutoConfigureMockMvc`).
 - **Frontend static output**: Nuxt generates to `frontend/.output/public`. Gradle's `copyFrontend` task copies this into `build/resources/main/static` — do not manually place files there.
 - **Prettier** formats `.json`, `.js`, `.md`, `.yml`, `.yaml`, `Dockerfile`, and `.sh` files. Run `./gradlew spotlessApply` to auto-fix.
 
@@ -110,10 +112,9 @@ docker build -t vicaba-app .
 
 ## Guardrails
 
-- **Never add `spring.web.resources.add-mappings=true`**. Static resource mapping is intentionally disabled; the SPA fallback is handled by `SpaFallbackConfig` to avoid conflicts.
 - **Never commit `frontend/.output/` or `src/main/resources/static/`**. Both are build artifacts and are git-ignored.
-- **Never use blocking I/O** (JDBC, `Thread.sleep`, `RestTemplate`) in any handler or service. This is a WebFlux/Reactor application; blocking calls will starve the event loop.
 - **Never bypass `copyFrontend` task**. The Gradle task chain (`frontendInstall → frontendGenerate → copyFrontend → processResources`) must remain intact for the jar to include frontend assets.
 - **Never modify `build/` or `.gradle/` directories**. These are Gradle's cache and output directories.
-- **Do not add `@Controller` or `@RequestMapping`**. All routing goes through the functional `coRouter` DSL in `config/RoutingConfig.kt`.
-- **API routes must be prefixed with `/api`** (configured via `application.api-base-path`). Routes outside this path will be caught by the SPA fallback and served as HTML.
+- **Do not add `@Controller` or `@RequestMapping`** for new API routes outside `handler/`. All API routing goes through `@RestController` classes with `@RequestMapping("${application.api-base-path}")`.
+- **API routes must be prefixed with `/api`** (configured via `application.api-base-path`). Routes outside this prefix are caught by `SpaFallbackConfig` and served as HTML or static files.
+- **Do not add WebFlux dependencies**. This project uses Spring Web MVC (Tomcat). Adding `spring-boot-starter-webflux` or reactor/coroutine libs will conflict.

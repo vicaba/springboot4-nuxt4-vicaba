@@ -3,50 +3,53 @@ package com.example.demo.handler
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.shouldBe
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ApplyExtension(SpringExtension::class)
 class HelloHandlerSpec(
-    private val helloHandler: HelloHandler,
+    private val context: WebApplicationContext,
 ) : FunSpec() {
+    private lateinit var mockMvc: MockMvc
+
     init {
-        test("getHello should return Hello message with OK status") {
-            val mockRequest = mockk<ServerRequest>()
-
-            runBlocking {
-                val response = helloHandler.getHello(mockRequest)
-
-                response.statusCode().value() shouldBe 200
-                response.headers().contentType shouldBe MediaType.APPLICATION_JSON
-            }
+        beforeTest {
+            mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
         }
 
-        test("getHello should return APPLICATION_JSON content type") {
-            val mockRequest = mockk<ServerRequest>()
-
-            runBlocking {
-                val response = helloHandler.getHello(mockRequest)
-
-                response.headers().contentType shouldBe MediaType.APPLICATION_JSON
-            }
+        test("GET /api/hello should return Hello message with OK status") {
+            mockMvc
+                .get("/api/hello") {
+                    accept = MediaType.TEXT_PLAIN
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.TEXT_PLAIN) }
+                    content { string("Hello World") }
+                }
         }
 
-        test("getHello should handle multiple requests") {
-            val mockRequest1 = mockk<ServerRequest>()
-            val mockRequest2 = mockk<ServerRequest>()
+        test("GET /api/hello should return TEXT_PLAIN content type") {
+            mockMvc
+                .get("/api/hello") {
+                    accept = MediaType.TEXT_PLAIN
+                }.andExpect {
+                    content { contentType(MediaType.TEXT_PLAIN) }
+                }
+        }
 
-            runBlocking {
-                val response1 = helloHandler.getHello(mockRequest1)
-                val response2 = helloHandler.getHello(mockRequest2)
-
-                response1.statusCode().value() shouldBe 200
-                response2.statusCode().value() shouldBe 200
+        test("GET /api/hello should handle multiple requests") {
+            repeat(2) {
+                mockMvc
+                    .get("/api/hello") {
+                        accept = MediaType.TEXT_PLAIN
+                    }.andExpect {
+                        status { isOk() }
+                    }
             }
         }
     }

@@ -8,7 +8,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.server.ServerRequest
 
 class IndexHandlerSpec : FunSpec() {
     private val applicationProperties =
@@ -19,27 +18,21 @@ class IndexHandlerSpec : FunSpec() {
 
     init {
         test("getIndex should return OK status") {
-            val request = mockk<ServerRequest>()
+            val response = indexHandler.getIndex()
 
-            val response = indexHandler.getIndex(request)
-
-            response.statusCode().value() shouldBe 200
+            response.statusCode.value() shouldBe 200
         }
 
         test("getIndex should return TEXT_HTML content type") {
-            val request = mockk<ServerRequest>()
+            val response = indexHandler.getIndex()
 
-            val response = indexHandler.getIndex(request)
-
-            response.headers().contentType shouldBe MediaType.TEXT_HTML
+            response.headers.contentType shouldBe MediaType.TEXT_HTML
         }
 
         test("getIndex should set Cache-Control to no-cache") {
-            val request = mockk<ServerRequest>()
+            val response = indexHandler.getIndex()
 
-            val response = indexHandler.getIndex(request)
-
-            response.headers().cacheControl shouldContain "no-cache"
+            response.headers.cacheControl shouldContain "no-cache"
         }
     }
 }

@@ -3,48 +3,52 @@ package com.example.demo.handler
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.shouldBe
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ApplyExtension(SpringExtension::class)
 class IndexHandlerSpec(
-    private val indexHandler: IndexHandler,
+    private val context: WebApplicationContext,
 ) : FunSpec() {
+    private lateinit var mockMvc: MockMvc
+
     init {
-        test("getIndex should return index file content with OK status") {
-            val mockRequest = mockk<ServerRequest>()
-
-            runBlocking {
-                val response = indexHandler.getIndex(mockRequest)
-
-                response.statusCode().value() shouldBe 200
-                response.headers().contentType shouldBe MediaType.TEXT_HTML
-            }
+        beforeTest {
+            mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
         }
 
-        test("getIndex should set TEXT_HTML content type") {
-            val mockRequest = mockk<ServerRequest>()
-
-            runBlocking {
-                val response = indexHandler.getIndex(mockRequest)
-
-                response.headers().contentType shouldBe MediaType.TEXT_HTML
-            }
+        test("GET / with Accept text/html should return index file content with OK status") {
+            mockMvc
+                .get("/") {
+                    accept = MediaType.TEXT_HTML
+                }.andExpect {
+                    status { isOk() }
+                    content { contentTypeCompatibleWith(MediaType.TEXT_HTML) }
+                }
         }
 
-        test("getIndex should return application properties index file") {
-            val mockRequest = mockk<ServerRequest>()
+        test("GET /about with Accept text/html should return SPA fallback with TEXT_HTML content type") {
+            mockMvc
+                .get("/about") {
+                    accept = MediaType.TEXT_HTML
+                }.andExpect {
+                    status { isOk() }
+                    content { contentTypeCompatibleWith(MediaType.TEXT_HTML) }
+                }
+        }
 
-            runBlocking {
-                val response = indexHandler.getIndex(mockRequest)
-
-                response.statusCode().value() shouldBe 200
-            }
+        test("GET / with Accept text/html should return application properties index file") {
+            mockMvc
+                .get("/") {
+                    accept = MediaType.TEXT_HTML
+                }.andExpect {
+                    status { isOk() }
+                }
         }
     }
 }

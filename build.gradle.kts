@@ -46,11 +46,9 @@ dependencies {
     annotationProcessor(bom)
 
     implementation(libs.jackson.module.kotlin)
-    implementation(libs.reactor.kotlin.extensions)
     implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.spring.boot.starter.actuator)
-    implementation(libs.spring.boot.starter.webflux)
+    implementation(libs.spring.boot.starter.web)
 
     developmentOnly(libs.spring.boot.devtools)
 
@@ -84,10 +82,8 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(libs.kotest.extensions.spring)
-                implementation(libs.reactor.test)
                 implementation(libs.spring.boot.starter.test)
-                implementation(libs.spring.boot.starter.webflux)
-                implementation(libs.kotlinx.coroutines.reactor)
+                implementation(libs.spring.boot.starter.web)
             }
 
             targets.all {
