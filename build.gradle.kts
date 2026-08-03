@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.gradle.node)
     alias(libs.plugins.version.catalog.update)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.openapi.generator)
 }
 
 group = "com.example"
@@ -33,6 +34,14 @@ kotlin {
     }
 }
 
+sourceSets {
+    main {
+        kotlin {
+            srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
+        }
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -49,10 +58,39 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.swagger.annotations)
+    implementation(libs.jakarta.validation.api)
 
     developmentOnly(libs.spring.boot.devtools)
 
     annotationProcessor(libs.spring.boot.configuration.processor)
+}
+
+openApiGenerate {
+    generatorName.set("kotlin-spring")
+    inputSpec.set("$rootDir/openapi/api.yaml")
+    outputDir.set(
+        layout.buildDirectory
+            .dir("generated/openapi")
+            .get()
+            .asFile.path,
+    )
+    apiPackage.set("com.example.demo.api")
+    modelPackage.set("com.example.demo.model")
+    configOptions.set(
+        mapOf(
+            "interfaceOnly" to "true",
+            "useSpringBoot3" to "true",
+            "useTags" to "true",
+            "documentationProvider" to "none",
+            "enumPropertyNaming" to "UPPERCASE",
+            "serializationLibrary" to "jackson",
+        ),
+    )
+}
+
+tasks.named("compileKotlin") {
+    dependsOn(tasks.named("openApiGenerate"))
 }
 
 testing {
@@ -146,15 +184,17 @@ spotless {
     val prettierPluginSh = "prettier-plugin-sh" to "0.18.0"
     val defaultTargetExcludes =
         listOf(
-            ".git/**",
-            ".gradle/**",
-            ".idea/**",
-            ".claude/**",
-            "bin/**",
-            "build/**",
-            "gradle/**",
+            "**/.git/**",
+            "**/.gradle/**",
+            "**/.idea/**",
+            "**/.claude/**",
+            "**/.output/**",
+            "**/bin/**",
+            "**/build/**",
+            "**/gradle/**",
+            "**/frontend/**",
             "frontend/**",
-            "src/main/resources/static/**",
+            "**/src/main/resources/static/**",
         )
 
     kotlin {

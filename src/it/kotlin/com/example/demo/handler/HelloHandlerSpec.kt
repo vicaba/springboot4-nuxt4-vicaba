@@ -25,20 +25,11 @@ class HelloHandlerSpec(
         test("GET /api/hello should return Hello message with OK status") {
             mockMvc
                 .get("/api/hello") {
-                    accept = MediaType.TEXT_PLAIN
+                    accept = MediaType.APPLICATION_JSON
                 }.andExpect {
                     status { isOk() }
-                    content { contentType(MediaType.TEXT_PLAIN) }
-                    content { string("Hello World") }
-                }
-        }
-
-        test("GET /api/hello should return TEXT_PLAIN content type") {
-            mockMvc
-                .get("/api/hello") {
-                    accept = MediaType.TEXT_PLAIN
-                }.andExpect {
-                    content { contentType(MediaType.TEXT_PLAIN) }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.message") { value("Hello World!") }
                 }
         }
 
@@ -46,7 +37,7 @@ class HelloHandlerSpec(
             repeat(2) {
                 mockMvc
                     .get("/api/hello") {
-                        accept = MediaType.TEXT_PLAIN
+                        accept = MediaType.APPLICATION_JSON
                     }.andExpect {
                         status { isOk() }
                     }

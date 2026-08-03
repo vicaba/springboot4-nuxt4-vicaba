@@ -36,6 +36,14 @@ To work with active hot reloading on both the frontend and backend:
    _Open
    [http://localhost:3000](http://localhost:3000) (or the port specified by Nuxt)._
 
+## OpenAPI Specification (Contract-First)
+
+This project follows a **Contract-First** OpenAPI workflow:
+
+- **Single Source of Truth**: Define endpoints and schemas in [`openapi/api.yaml`](openapi/api.yaml).
+- **Backend Code Generation**: Kotlin models and Spring API interfaces are generated automatically into `build/generated/openapi/` via `./gradlew openApiGenerate` (runs automatically during `./gradlew compileKotlin` and `./gradlew assemble`).
+- **Frontend Type Generation**: TypeScript types are generated into [`frontend/app/types/api.d.ts`](frontend/app/types/api.d.ts) via `cd frontend && npm run generate:types`.
+
 ## Deployment in production
 
 This project is intended to be deployed using Docker.

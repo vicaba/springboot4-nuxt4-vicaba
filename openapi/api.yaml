@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: Vicaba API Specification
+  description: Shared OpenAPI specification between Spring Boot backend and Nuxt frontend
+  version: 1.0.0
+paths:
+  /api/hello:
+    get:
+      summary: Get Hello World Message
+      operationId: getHello
+      responses:
+        "200":
+          description: Successful response containing the hello message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelloResponse"
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    HelloResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: "Hello World!"

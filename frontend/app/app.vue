@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { components } from '~/types/api'
+
+type HelloResponse = components['schemas']['HelloResponse']
+
 const message = ref<string | null>(null)
 const pending = ref(true)
 const error = ref<string | null>(null)
@@ -7,10 +11,10 @@ const fetchMessage = async () => {
   pending.value = true
   error.value = null
   try {
-    message.value = await $fetch('/api/hello', {
-      responseType: 'text',
-      timeout: 3000, // 3-second timeout
+    const data = await $fetch<HelloResponse>('/api/hello', {
+      timeout: 3000,
     })
+    message.value = data.message
   } catch (err: any) {
     error.value = err?.message || 'Failed to fetch message from backend'
   } finally {

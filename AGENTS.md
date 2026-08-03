@@ -2,7 +2,7 @@
 
 ## Overview
 
-Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, packaged together into a single Docker image with Gradle managing the full build pipeline.
+Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, packaged together into a single Docker image with Gradle managing the full build pipeline. Includes Contract-First OpenAPI specification sharing (`openapi/api.yaml`).
 
 ---
 
@@ -11,6 +11,9 @@ Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, 
 ### Backend
 
 ```bash
+# Generate Kotlin models and API interfaces from openapi/api.yaml
+./gradlew openApiGenerate
+
 # Run all unit tests
 ./gradlew test
 
@@ -24,7 +27,7 @@ Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, 
 ./gradlew spotlessCheck
 ./gradlew spotlessApply
 
-# Build the full app (frontend generate → copy → backend jar)
+# Build the full app (OpenAPI gen → frontend generate → copy → backend jar)
 ./gradlew assemble
 
 # Run locally (dev profile, frontend must be built or served separately)
@@ -39,10 +42,13 @@ cd frontend
 # Install dependencies
 npm ci
 
+# Generate TypeScript types from openapi/api.yaml
+npm run generate:types
+
 # Dev server (hot reload, port 3000)
 npm run dev
 
-# Generate static output to frontend/.output/public
+# Generate static output to frontend/.output/public (also generates OpenAPI types)
 npm run generate
 
 # Check for major dependency updates
@@ -68,6 +74,8 @@ docker build -t vicaba-app .
 
 ```
 .
+├── openapi/
+│   └── api.yaml             # Single source of truth OpenAPI 3 spec
 ├── src/
 │   ├── main/kotlin/com/example/demo/
 │   │   ├── config/          # Spring beans: CORS (WebMvcConfig), SPA fallback controller, app properties
@@ -81,15 +89,17 @@ docker build -t vicaba-app .
 │   └── it/kotlin/           # Integration tests using Kotest + Spring test context + MockMvc
 ├── frontend/
 │   ├── app/                 # Nuxt source: pages/, components/, layouts/, app.vue
+│   │   └── types/
+│   │       └── api.d.ts     # Generated TypeScript types from openapi/api.yaml
 │   ├── public/              # Static assets served at root
 │   ├── nuxt.config.ts       # Nuxt configuration (SSG mode implied by `generate`)
 │   └── .output/public/      # Generated static output (git-ignored, copied into jar)
-├── build.gradle.kts         # Full build pipeline including frontend tasks
+├── build.gradle.kts         # Full build pipeline including OpenAPI & frontend tasks
 ├── compose.yaml             # Docker Compose (single `app` service, port 18080)
 └── Dockerfile               # Multi-stage: node frontend → JDK backend → distroless runtime
 ```
 
-- **New API endpoints**: add a `@RestController` in `handler/`, annotate with `@RequestMapping("${application.api-base-path}")`.
+- **New API endpoints**: define endpoint and schemas in `openapi/api.yaml`, run `./gradlew openApiGenerate` and `npm run generate:types`, then implement `@RestController` in `handler/` implementing generated interfaces or using generated models.
 - **New config properties**: extend `ApplicationProperties` in `config/ApplicationConfig.kt` and add keys to `application.properties`.
 - **SPA fallback & static files**: handled by `SpaFallbackConfig` (`@Controller @GetMapping("/**")`). It serves index.html for SPA routes and static files from `classpath:/static/` for file-extension paths.
 - **Frontend pages/components**: work only inside `frontend/app/`.
@@ -98,6 +108,7 @@ docker build -t vicaba-app .
 
 ## Code Style & Rules
 
+- **OpenAPI Schema First**: always add or update API endpoints and request/response models in `openapi/api.yaml`. Use generated Kotlin DTOs (`com.example.demo.model.*`) and frontend types (`~/app/types/api`).
 - **Kotlin style**: enforced by `ktlint` via `spotlessApply`. Run before committing.
 - **Controller pattern**: API controllers are `@RestController` classes in `handler/`. Non-API/SPA fallback lives in `config/SpaFallbackConfig.kt`. No functional router DSL.
 - **No blocking restriction**: this is a standard Spring MVC (servlet/Tomcat) app; regular synchronous blocking I/O is acceptable and expected.
