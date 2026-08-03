@@ -1,5 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true }
+  devtools: { enabled: true },
+  nitro: {
+    // Proxy /api requests to the Spring Boot backend during development.
+    // In production the backend serves everything from the same origin.
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:18080/api',
+        changeOrigin: true,
+      },
+    },
+  },
 })
