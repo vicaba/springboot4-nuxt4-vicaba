@@ -1,51 +1,105 @@
-# Playwright Execution & Screenshot Process
+# Playwright End-to-End Testing & Verification
 
-This document summarizes the steps executed and technical rationale behind running the frontend and backend services and capturing a screenshot of `http://localhost:3000` using Playwright.
-
----
-
-## 1. Summary of Actions Taken
-
-### A. Launched Full-Stack Local Servers
-
-- **Backend**: Started the Spring Boot 4 Kotlin application on port `18080` using:
-  ```bash
-  ./gradlew bootRun --args='--spring.profiles.active=dev'
-  ```
-- **Frontend**: Started the Nuxt 4 development server on port `3000` using:
-  ```bash
-  npm run dev # inside frontend/
-  ```
-- **Rationale**: Both services must be running simultaneously so that the Nuxt frontend can fetch backend responses (e.g., `/api/hello`) and render the integrated application state at `http://localhost:3000`.
+This document provides instructions for running end-to-end (E2E) browser automation tests against the integrated Spring Boot backend and Nuxt 4 SSG frontend stack.
 
 ---
 
-### B. Handled Browser Automation Environment
+## 1. System Prerequisites (Pre-Install to Avoid Re-Downloads)
 
-- **Issue**: The agent's integrated browser tool (`open_browser_url`) encountered a Chrome DevTools Protocol (CDP) context limitation (`Browser context management is not supported`).
-- **Resolution**: Initialized a dedicated Playwright instance using Node.js to perform true end-to-end browser automation directly.
+To run Playwright tests instantly without downloading browser binaries every time, you can use either **npx pre-download** or your **system/Homebrew Chromium/Chrome**.
+
+### Option A: Use System Chromium / Chrome (Homebrew or Installed Chrome)
+
+If you install Chromium via Homebrew:
+
+```bash
+brew install --cask chromium
+```
+
+You can instruct Playwright to skip browser downloads and use your installed binary by setting environment variables in your shell (`~/.zshrc`):
+
+```bash
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="/Applications/Chromium.app/Contents/MacOS/Chromium"
+# Or for system Google Chrome:
+# export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+```
+
+Alternatively, specify `executablePath` or `channel: 'chrome'` directly in your script:
+
+```javascript
+const browser = await chromium.launch({
+  channel: "chrome", // Uses system installed Google Chrome
+  headless: true,
+});
+```
+
+### Option B: Use Playwright Bundled Chromium
+
+Download and cache the headless Chromium browser binary once globally:
+
+```bash
+cd frontend
+npm install
+npx playwright install chromium
+```
 
 ---
 
-### C. Created & Executed Playwright Script
+## 2. Running Full-Stack E2E Verification
 
-- Installed Playwright and downloaded the Chromium browser binary:
-  ```bash
-  npm i playwright && npx playwright install chromium
-  ```
-- Created a automated Node.js Playwright script to:
-  1. Launch headless Chromium.
-  2. Navigate to `http://localhost:3000` and wait for network requests to settle (`networkidle`).
-  3. Extract the rendered page text from the DOM `body`.
-  4. Capture a full-page screenshot saved as `localhost_3000.png`.
+### Step 1: Start Backend Service
+
+In a terminal window, start the Spring Boot application on port `18080`:
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=dev'
+```
+
+### Step 2: Start Frontend Service
+
+In a separate terminal window, start the Nuxt dev server on port `3000`:
+
+```bash
+cd frontend
+npm run dev
+```
+
+### Step 3: Execute Playwright Verification Script
+
+Run the automated Playwright script using Node.js:
+
+```bash
+node -e "
+import { chromium } from 'playwright';
+
+(async () => {
+  const browser = await chromium.launch({
+    headless: true,
+    // Optional: executablePath: '/Applications/Chromium.app/Contents/MacOS/Chromium'
+  });
+  const page = await browser.newPage();
+
+  // Test Home Page
+  await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+  console.log('Home Page Title:', await page.textContent('h1'));
+  await page.screenshot({ path: 'home.png', fullPage: true });
+
+  // Test Transactions Page
+  await page.goto('http://localhost:3000/transactions', { waitUntil: 'networkidle' });
+  await page.waitForSelector('.data-table');
+  console.log('Rendered Page Content:\n', await page.innerText('body'));
+  await page.screenshot({ path: 'transactions.png', fullPage: true });
+
+  await browser.close();
+})();
+"
+```
 
 ---
 
-## 2. Verification Results
+## 3. General E2E Testing Guidelines
 
-- **Rendered Text Content**:
-  ```text
-  Nuxt 4 + Spring Boot 4
-  Hello World!
-  ```
-- **Captured Screenshot Path**: Artifact directory `localhost_3000.png`.
+- **Headless Mode**: Always run Chromium with `{ headless: true }`.
+- **Network Idle**: Use `{ waitUntil: 'networkidle' }` to ensure backend API fetch requests settle before evaluating DOM content.
+- **Selector Waiting**: Use `await page.waitForSelector('<element-selector>')` to wait for dynamic Vue components to render data fetched from backend REST endpoints.

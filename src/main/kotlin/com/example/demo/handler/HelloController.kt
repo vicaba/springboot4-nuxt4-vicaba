@@ -13,6 +13,6 @@ class HelloController {
     @GetMapping("/hello")
     fun getHello(): ResponseEntity<HelloResponse> {
         logger.info("Called hello api")
-        return ResponseEntity.ok(HelloResponse(message = "Hello World!!"))
+        return ResponseEntity.ok(HelloResponse(message = "Hello World!"))
     }
 }

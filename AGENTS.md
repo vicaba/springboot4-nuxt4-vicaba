@@ -1,134 +1,40 @@
 # AGENTS.md
 
-## Overview
-
-Spring Boot 4 (Web MVC, Kotlin, Java 25) backend serving a Nuxt 4 SSG frontend, packaged together into a single Docker image with Gradle managing the full build pipeline. Includes Contract-First OpenAPI specification sharing (`openapi/api.yaml`).
-
----
+## Project Overview
+Spring Boot 4 (Kotlin, Servlet/Tomcat, Java 25) backend serving a Nuxt 4 SSG frontend, managed by a Gradle unified build pipeline with a single-source-of-truth OpenAPI 3 specification (`openapi/api.yaml`).
 
 ## Commands
 
 ### Backend
-
-```bash
-# Generate Kotlin models and API interfaces from openapi/api.yaml
-./gradlew openApiGenerate
-
-# Run all unit tests
-./gradlew test
-
-# Run integration tests (also runs unit tests first)
-./gradlew integrationTest
-
-# Run all checks (unit + integration tests)
-./gradlew check
-
-# Lint & format (Kotlin via ktlint, JSON/YAML/MD via Prettier)
-./gradlew spotlessCheck
-./gradlew spotlessApply
-
-# Build the full app (OpenAPI gen → frontend generate → copy → backend jar)
-./gradlew assemble
-
-# Run locally (dev profile, frontend must be built or served separately)
-./gradlew bootRun --args='--spring.profiles.active=dev'
-```
+- `./gradlew openApiGenerate`: Generate Kotlin models (`com.example.demo.model.*`) from `openapi/api.yaml`.
+- `./gradlew test`: Run backend unit tests (Kotest).
+- `./gradlew integrationTest`: Run Spring Boot integration tests (Kotest + MockMvc).
+- `./gradlew check`: Run full check pipeline (unit + integration tests).
+- `./gradlew spotlessApply`: Auto-format Kotlin (`ktlint`) and config/doc files (`prettier`).
+- `./gradlew bootRun --args='--spring.profiles.active=dev'`: Run backend locally on port `18080`.
+- `./gradlew assemble`: Build full app JAR (generates OpenAPI, builds frontend, packages into static resources).
 
 ### Frontend
-
-```bash
-cd frontend
-
-# Install dependencies
-npm ci
-
-# Generate TypeScript types from openapi/api.yaml
-npm run generate:types
-
-# Dev server (hot reload, port 3000)
-npm run dev
-
-# Generate static output to frontend/.output/public (also generates OpenAPI types)
-npm run generate
-
-# Check for major dependency updates
-npm run deps:check
-
-# Apply major dependency updates
-npm run deps:update
-```
+- `cd frontend && npm ci`: Install frontend dependencies.
+- `cd frontend && npm run generate:types`: Generate TypeScript types (`app/types/api.d.ts`) from `openapi/api.yaml`.
+- `cd frontend && npm run dev`: Run Nuxt dev server on port `3000` (proxies `/api` to `http://localhost:18080`).
+- `cd frontend && npm run generate`: Generate static site output to `frontend/.output/public`.
+- `cd frontend && npm run test:e2e`: Run E2E Playwright tests using headless Chromium or system Google Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`).
 
 ### Docker
+- `docker compose up --build`: Build and run full stack on port `18080`.
 
-```bash
-# Build and run via Docker Compose (full stack, port 18080)
-docker compose up --build
+## Coding Standards
+- **OpenAPI Contract-First**: All API endpoints and data models MUST be defined in `openapi/api.yaml`. Generate DTOs (`./gradlew openApiGenerate` and `npm run generate:types`) before implementing features.
+- **Backend Architecture**: All API `@RestController` classes must live in `com.example.demo.handler` and use `@RequestMapping("${application.api-base-path}")`.
+- **Domain Code**: Multi-currency and investment domain abstractions use `com.vicaba.demobroker` package namespace (`com.vicaba.demobroker.tracker.currency.domain`, `com.vicaba.demobroker.tracker.transaction.domain`).
+- **Frontend Code**: Nuxt 4 source code must live exclusively in `frontend/app/` (pages, components, layouts, types). Use generated OpenAPI types from `~/types/api`.
+- **Testing**: Use Kotest (not JUnit assertions) for Kotlin unit/integration tests. For frontend E2E browser tests, launch headless Chromium or system Google Chrome directly (do NOT attach to existing CDP sessions).
+- **Logging**: Use project extension `com.example.demo.logger.logger` instead of direct SLF4J logger imports.
+- **Properties**: Bind properties using `@ConfigurationProperties` data classes with `application` prefix.
 
-# Build image only
-docker build -t vicaba-app .
-```
-
----
-
-## Structure
-
-```
-.
-├── openapi/
-│   └── api.yaml             # Single source of truth OpenAPI 3 spec
-├── src/
-│   ├── main/kotlin/com/example/demo/
-│   │   ├── config/          # Spring beans: CORS (WebMvcConfig), SPA fallback controller, app properties
-│   │   ├── handler/         # MVC handlers/controllers (HelloController, IndexHandler)
-│   │   ├── logger/          # Logger extension (Kotlin extension fun logger())
-│   │   └── DemoApplication.kt
-│   ├── main/resources/
-│   │   ├── application.properties       # Server port, API base path, CORS, index file
-│   │   └── application-dev.properties   # Dev overrides (e.g. debug, devtools)
-│   ├── test/kotlin/         # Unit tests using Kotest + MockK
-│   └── it/kotlin/           # Integration tests using Kotest + Spring test context + MockMvc
-├── frontend/
-│   ├── app/                 # Nuxt source: pages/, components/, layouts/, app.vue
-│   │   └── types/
-│   │       └── api.d.ts     # Generated TypeScript types from openapi/api.yaml
-│   ├── public/              # Static assets served at root
-│   ├── nuxt.config.ts       # Nuxt configuration (SSG mode implied by `generate`)
-│   └── .output/public/      # Generated static output (git-ignored, copied into jar)
-├── build.gradle.kts         # Full build pipeline including OpenAPI & frontend tasks
-├── compose.yaml             # Docker Compose (single `app` service, port 18080)
-└── Dockerfile               # Multi-stage: node frontend → JDK backend → distroless runtime
-```
-
-- **New API endpoints**: define endpoint and schemas in `openapi/api.yaml`, run `./gradlew openApiGenerate` and `npm run generate:types`, then implement `@RestController` in `handler/` implementing generated interfaces or using generated models.
-- **New config properties**: extend `ApplicationProperties` in `config/ApplicationConfig.kt` and add keys to `application.properties`.
-- **SPA fallback & static files**: handled by `SpaFallbackConfig` (`@Controller @GetMapping("/**")`). It serves index.html for SPA routes and static files from `classpath:/static/` for file-extension paths.
-- **Frontend pages/components**: work only inside `frontend/app/`.
-
----
-
-## Code Style & Rules
-
-- **OpenAPI Schema First**: always add or update API endpoints and request/response models in `openapi/api.yaml`. Use generated Kotlin DTOs (`com.example.demo.model.*`) and frontend types (`~/app/types/api`).
-- **Kotlin style**: enforced by `ktlint` via `spotlessApply`. Run before committing.
-- **Controller pattern**: API controllers are `@RestController` classes in `handler/`. Non-API/SPA fallback lives in `config/SpaFallbackConfig.kt`. No functional router DSL.
-- **No blocking restriction**: this is a standard Spring MVC (servlet/Tomcat) app; regular synchronous blocking I/O is acceptable and expected.
-- **Logging**: use the project's `logger` extension (`com.example.demo.logger.logger`) instead of importing a logger directly.
-- **Properties binding**: use `@ConfigurationProperties` data classes, not `@Value`. Prefix is `application`.
-- **API base path**: controllers should use `@RequestMapping("\${application.api-base-path}")` instead of hard-coding `/api`.
-- **Test framework**: Kotest (not JUnit assertions). Unit tests in `src/test/kotlin`, integration tests in `src/it/kotlin` (use `MockMvc` via `@AutoConfigureMockMvc`).
-- **Frontend static output**: Nuxt generates to `frontend/.output/public`. Gradle's `copyFrontend` task copies this into `build/resources/main/static` — do not manually place files there.
-- **Prettier** formats `.json`, `.js`, `.md`, `.yml`, `.yaml`, `Dockerfile`, and `.sh` files. Run `./gradlew spotlessApply` to auto-fix.
-
----
-
-## Guardrails
-
-- **Never commit `frontend/.output/` or `src/main/resources/static/`**. Both are build artifacts and are git-ignored.
-- **Never bypass `copyFrontend` task**. The Gradle task chain (`frontendInstall → frontendGenerate → copyFrontend → processResources`) must remain intact for the jar to include frontend assets.
-- **Never modify `build/` or `.gradle/` directories**. These are Gradle's cache and output directories.
-- **Do not add `@Controller` or `@RequestMapping`** for new API routes outside `handler/`. All API routing goes through `@RestController` classes with `@RequestMapping("${application.api-base-path}")`.
-- **API routes must be prefixed with `/api`** (configured via `application.api-base-path`). Routes outside this prefix are caught by `SpaFallbackConfig` and served as HTML or static files.
-
-## Testing
-
-- **When asked to test frontend changes, Run the Nuxt frontend tests using a headless Chromium browser instance rather than attaching via existing CDP sessions**.
+## Gotchas / Pitfalls
+- **Build Artifact Exclusions**: NEVER manually commit or edit `frontend/.output/` or `src/main/resources/static/`. They are generated build artifacts.
+- **Gradle Task Chain**: NEVER bypass `copyFrontend`. `frontendInstall -> frontendGenerate -> copyFrontend -> processResources` must remain intact for the JAR build.
+- **API Route Base Path**: All API endpoints MUST start with `/api` (configured via `application.api-base-path`). Non-API routes are intercepted by `SpaFallbackConfig` and served as SPA/static HTML.
+- **Mac Gatekeeper & Playwright**: When running Playwright E2E browser tests, use system Google Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`) or Playwright bundled Chromium rather than unsigned Homebrew binaries that fail macOS Gatekeeper.

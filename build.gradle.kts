@@ -194,6 +194,8 @@ spotless {
             "**/gradle/**",
             "**/frontend/**",
             "frontend/**",
+            "**/dist/**",
+            "frontend/dist",
             "**/src/main/resources/static/**",
         )
 

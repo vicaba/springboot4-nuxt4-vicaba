@@ -18,6 +18,19 @@ paths:
             text/plain:
               schema:
                 type: string
+  /api/transactions:
+    get:
+      summary: Get list of dummy investment transactions
+      operationId: getTransactions
+      responses:
+        "200":
+          description: Successful response containing list of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionResponse"
 components:
   schemas:
     HelloResponse:
@@ -28,3 +41,85 @@ components:
         message:
           type: string
           example: "Hello World!"
+    MoneyDto:
+      type: object
+      required:
+        - value
+        - currency
+      properties:
+        value:
+          type: number
+          format: double
+          example: 150.50
+        currency:
+          type: string
+          example: "USD"
+    ConvertedMoneyDto:
+      type: object
+      required:
+        - value
+        - original
+      properties:
+        value:
+          $ref: "#/components/schemas/MoneyDto"
+        original:
+          $ref: "#/components/schemas/MoneyDto"
+    ConvertedCurrencyDto:
+      type: object
+      required:
+        - value
+        - original
+      properties:
+        value:
+          type: string
+          example: "USD"
+        original:
+          type: string
+          example: "EUR"
+    TransactionResponse:
+      type: object
+      required:
+        - id
+        - account
+        - symbol
+        - date
+        - currency
+        - op
+        - quantity
+        - price
+        - fee
+        - code
+      properties:
+        id:
+          type: string
+          example: "tx-12345"
+        account:
+          type: string
+          example: "brokerage-acc-1"
+        symbol:
+          type: string
+          example: "AAPL"
+        date:
+          type: string
+          format: date-time
+          example: "2026-08-03T10:00:00Z"
+        currency:
+          $ref: "#/components/schemas/ConvertedCurrencyDto"
+        op:
+          type: string
+          enum: [BUY, SELL]
+          example: "BUY"
+        quantity:
+          type: integer
+          format: int64
+          example: 10
+        price:
+          $ref: "#/components/schemas/ConvertedMoneyDto"
+        fee:
+          $ref: "#/components/schemas/ConvertedMoneyDto"
+        code:
+          type: array
+          items:
+            type: string
+            enum: [OPEN, CLOSE, UNKNOWN]
+          example: ["OPEN"]
