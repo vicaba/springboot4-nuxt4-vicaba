@@ -25,7 +25,6 @@ To work with active hot reloading on both the frontend and backend:
 
    In another terminal, run `./gradlew compileKotlin -t`, this will enable hot reload and `bootRun` will pick the changes.
 
-
 2. **Start the Frontend**:
    Run the Nuxt dev server. Any API calls to `/api/**` are automatically proxied to port 18080 via Nitro's dev proxy:
    ```bash
@@ -35,7 +34,7 @@ To work with active hot reloading on both the frontend and backend:
    npm run dev
    ```
    _Open
-    [http://localhost:3000](http://localhost:3000) (or the port specified by Nuxt)._
+   [http://localhost:3000](http://localhost:3000) (or the port specified by Nuxt)._
 
 ## Deployment in production
 

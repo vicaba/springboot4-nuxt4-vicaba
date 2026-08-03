@@ -117,4 +117,7 @@ docker build -t vicaba-app .
 - **Never modify `build/` or `.gradle/` directories**. These are Gradle's cache and output directories.
 - **Do not add `@Controller` or `@RequestMapping`** for new API routes outside `handler/`. All API routing goes through `@RestController` classes with `@RequestMapping("${application.api-base-path}")`.
 - **API routes must be prefixed with `/api`** (configured via `application.api-base-path`). Routes outside this prefix are caught by `SpaFallbackConfig` and served as HTML or static files.
-- **Do not add WebFlux dependencies**. This project uses Spring Web MVC (Tomcat). Adding `spring-boot-starter-webflux` or reactor/coroutine libs will conflict.
+
+## Testing
+
+- **When asked to test frontend changes, Run the Nuxt frontend tests using a headless Chromium browser instance rather than attaching via existing CDP sessions**.
