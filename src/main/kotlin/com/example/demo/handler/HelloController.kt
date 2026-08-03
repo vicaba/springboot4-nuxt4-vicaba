@@ -16,6 +16,6 @@ class HelloController {
         return ResponseEntity
             .ok()
             .contentType(MediaType.TEXT_PLAIN)
-            .body("Hello World!!")
+            .body("Hello World!")
     }
 }
