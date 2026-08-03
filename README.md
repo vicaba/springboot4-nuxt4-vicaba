@@ -23,7 +23,8 @@ To work with active hot reloading on both the frontend and backend:
    ./gradlew bootRun --args='--spring.profiles.active=dev'
    ```
 
-   _To trigger backend class reloads after making Java/Kotlin changes, compile the project in a separate terminal: `./gradlew compileKotlin`_
+   In another terminal, run `./gradlew compileKotlin -t`, this will enable hot reload and `bootRun` will pick the changes.
+
 
 2. **Start the Frontend**:
    Run the Nuxt dev server. Any API calls to `/api/**` are automatically proxied to port 18080 via Nitro's dev proxy:
@@ -33,9 +34,10 @@ To work with active hot reloading on both the frontend and backend:
    npm ci
    npm run dev
    ```
-   _Open [http://localhost:3000](http://localhost:3000) (or the port specified by Nuxt)._
+   _Open
+    [http://localhost:3000](http://localhost:3000) (or the port specified by Nuxt)._
 
-## Deployment
+## Deployment in production
 
 This project is intended to be deployed using Docker.
 Docker containers can be built for both the backend and frontend components and then deployed using container orchestration platforms like Kubernetes or Docker Compose.
