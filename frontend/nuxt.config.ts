@@ -2,6 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  vite: {
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+  },
   nitro: {
     // Proxy /api requests to the Spring Boot backend during development.
     // In production the backend serves everything from the same origin.

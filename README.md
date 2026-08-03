@@ -29,6 +29,7 @@ To work with active hot reloading on both the frontend and backend:
    Run the Nuxt dev server. Any API calls to `/api/**` are automatically proxied to port 18080 via Nitro's dev proxy:
    ```bash
    cd frontend
+   npx nuxi prepare # Creates type information for the IDE and Nuxt 4. Language server might need to be restarted.
    npm ci
    npm run dev
    ```
