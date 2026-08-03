@@ -1,5 +1,6 @@
 package com.example.demo.handler
 
+import com.example.demo.api.TransactionsApi
 import com.example.demo.logger.logger
 import com.example.demo.model.ConvertedCurrencyDto
 import com.example.demo.model.ConvertedMoneyDto
@@ -13,8 +14,6 @@ import com.vicaba.demobroker.tracker.transaction.domain.Transaction
 import com.vicaba.demobroker.tracker.transaction.domain.TransactionCode
 import com.vicaba.demobroker.tracker.transaction.domain.TransactionId
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -22,10 +21,8 @@ import java.time.ZoneOffset
 import java.util.Currency
 
 @RestController
-@RequestMapping("\${application.api-base-path}")
-class TransactionController {
-    @GetMapping("/transactions")
-    fun getTransactions(): ResponseEntity<List<TransactionResponse>> {
+class TransactionController : TransactionsApi {
+    override fun getTransactions(): ResponseEntity<List<TransactionResponse>> {
         logger.info("Fetching dummy transactions")
         val dummyDomainTransactions = createDummyTransactions()
         val response = dummyDomainTransactions.map { it.toResponse() }

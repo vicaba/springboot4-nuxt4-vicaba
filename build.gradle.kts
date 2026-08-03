@@ -100,9 +100,6 @@ testing {
 
             dependencies {
                 implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-                implementation(platform(libs.kotest.bom))
-                implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.runner.junit5)
                 implementation(libs.mockk)
             }
         }
@@ -119,7 +116,6 @@ testing {
 
             dependencies {
                 implementation(project())
-                implementation(libs.kotest.extensions.spring)
                 implementation(libs.spring.boot.starter.test)
                 implementation(libs.spring.boot.starter.web)
             }

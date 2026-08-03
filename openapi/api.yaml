@@ -6,6 +6,8 @@ info:
 paths:
   /api/hello:
     get:
+      tags:
+        - Hello
       summary: Get Hello World Message
       operationId: getHello
       responses:
@@ -20,6 +22,8 @@ paths:
                 type: string
   /api/transactions:
     get:
+      tags:
+        - Transactions
       summary: Get list of dummy investment transactions
       operationId: getTransactions
       responses:
