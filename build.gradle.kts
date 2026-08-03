@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.web)
     implementation(libs.swagger.annotations)
     implementation(libs.jakarta.validation.api)
@@ -148,7 +149,7 @@ val frontendInstall by tasks.registering(NpmTask::class) {
     workingDir = frontendDir.asFile
     args = listOf("ci")
     inputs.file(frontendDir.file("package-lock.json"))
-    outputs.dir(frontendDir.dir("node_modules"))
+    outputs.file(frontendDir.file("node_modules/.package-lock.json"))
 }
 
 val frontendGenerate by tasks.registering(NpmTask::class) {

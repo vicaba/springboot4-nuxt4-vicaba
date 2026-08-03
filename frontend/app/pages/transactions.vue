@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import type { components } from '~/types/api'
+import type { paths, operations } from '~/types/api'
+import { fetchApi } from '~/utils/api'
 
-type TransactionResponse = components['schemas']['TransactionResponse']
+type TransactionsPath = keyof Pick<paths, '/api/transactions'>
+type TransactionResponse =
+  operations['getTransactions']['responses'][200]['content']['application/json'][number]
+
+const transactionsPath: TransactionsPath = '/api/transactions'
 
 const transactions = ref<TransactionResponse[]>([])
 const pending = ref(true)
@@ -13,7 +18,7 @@ const fetchTransactions = async () => {
   pending.value = true
   error.value = null
   try {
-    const data = await $fetch<TransactionResponse[]>('/api/transactions', {
+    const data = await fetchApi(transactionsPath, {
       timeout: 5000,
     })
     transactions.value = data

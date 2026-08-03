@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type { components } from '~/types/api'
+import type { paths, operations } from '~/types/api'
+import { fetchApi } from '~/utils/api'
 
-type HelloResponse = components['schemas']['HelloResponse']
+type HelloPath = keyof Pick<paths, '/api/hello'>
+type HelloResponse = operations['getHello']['responses'][200]['content']['application/json']
+
+const helloPath: HelloPath = '/api/hello'
 
 const message = ref<string | null>(null)
 const pending = ref(true)
@@ -11,7 +15,7 @@ const fetchMessage = async () => {
   pending.value = true
   error.value = null
   try {
-    const data = await $fetch<HelloResponse>('/api/hello', {
+    const data = await fetchApi(helloPath, {
       timeout: 3000,
     })
     message.value = data.message
