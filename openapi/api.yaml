@@ -4,19 +4,19 @@ info:
   description: Shared OpenAPI specification between Spring Boot backend and Nuxt frontend
   version: 1.0.0
 paths:
-  /api/hello:
+  /api/status/health:
     get:
       tags:
-        - Hello
-      summary: Get Hello World Message
-      operationId: getHello
+        - Health
+      summary: Get Actuator Health Status
+      operationId: getHealth
       responses:
         "200":
-          description: Successful response containing the hello message
+          description: Successful response containing the health status
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HelloResponse"
+                $ref: "#/components/schemas/HealthResponse"
             text/plain:
               schema:
                 type: string
@@ -37,14 +37,15 @@ paths:
                   $ref: "#/components/schemas/TransactionResponse"
 components:
   schemas:
-    HelloResponse:
+    HealthResponse:
       type: object
       required:
-        - message
+        - status
       properties:
-        message:
+        status:
           type: string
-          example: "Hello World!"
+          enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
+          example: "UP"
     MoneyDto:
       type: object
       required:

@@ -1,4 +1,4 @@
-package com.example.demo.config
+package com.vicaba.demobroker.tracker.application.infra.config
 
 import io.mockk.every
 import io.mockk.mockk
@@ -52,7 +52,7 @@ class SpaFallbackConfigTest {
     inner class NonMatchingRequests {
         @Test
         fun `API sub-path does not match`() {
-            val request = mockRequest("/api/hello", "text/html")
+            val request = mockRequest("/api/actuator/health", "text/html")
             assertFalse(SpaFallbackConfig.isSpaRequest("/api", request))
         }
 

@@ -1,6 +1,6 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.application.infra.handler
 
-import com.example.demo.config.ApplicationProperties
+import com.vicaba.demobroker.tracker.application.infra.config.ApplicationProperties
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals

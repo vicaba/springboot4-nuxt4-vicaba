@@ -1,7 +1,7 @@
-package com.example.demo.config
+package com.vicaba.demobroker.tracker.application.infra.config
 
-import com.example.demo.handler.IndexHandler
-import com.example.demo.logger.logger
+import com.vicaba.demobroker.tracker.application.infra.handler.IndexHandler
+import com.vicaba.demobroker.tracker.application.infra.logger.logger
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.CacheControl

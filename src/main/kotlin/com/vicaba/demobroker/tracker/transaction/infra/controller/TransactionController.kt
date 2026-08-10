@@ -1,11 +1,11 @@
 package com.vicaba.demobroker.tracker.transaction.infra.controller
 
 import com.example.demo.api.TransactionsApi
-import com.example.demo.logger.logger
 import com.example.demo.model.ConvertedCurrencyDto
 import com.example.demo.model.ConvertedMoneyDto
 import com.example.demo.model.MoneyDto
 import com.example.demo.model.TransactionResponse
+import com.vicaba.demobroker.tracker.application.infra.logger.logger
 import com.vicaba.demobroker.tracker.currency.domain.ConvertedCurrency
 import com.vicaba.demobroker.tracker.currency.domain.ConvertedMoney
 import com.vicaba.demobroker.tracker.currency.domain.Money

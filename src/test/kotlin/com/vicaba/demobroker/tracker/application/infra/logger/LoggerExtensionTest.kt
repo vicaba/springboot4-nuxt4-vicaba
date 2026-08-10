@@ -1,4 +1,4 @@
-package com.example.demo.logger
+package com.vicaba.demobroker.tracker.application.infra.logger
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf

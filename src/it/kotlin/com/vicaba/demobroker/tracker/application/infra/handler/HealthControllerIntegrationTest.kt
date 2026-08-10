@@ -1,4 +1,4 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.application.infra.handler
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-class HelloControllerIntegrationTest {
+class HealthControllerIntegrationTest {
     @Autowired
     private lateinit var context: WebApplicationContext
 
@@ -23,26 +23,14 @@ class HelloControllerIntegrationTest {
     }
 
     @Test
-    fun `GET api hello should return Hello message with OK status`() {
+    fun `GET api status health should return UP status with OK status`() {
         mockMvc
-            .get("/api/hello") {
+            .get("/api/status/health") {
                 accept = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                jsonPath("$.message") { value("Hello World!") }
+                content { contentTypeCompatibleWith(MediaType.APPLICATION_JSON) }
+                jsonPath("$.status") { value("UP") }
             }
-    }
-
-    @Test
-    fun `GET api hello should handle multiple requests`() {
-        repeat(2) {
-            mockMvc
-                .get("/api/hello") {
-                    accept = MediaType.APPLICATION_JSON
-                }.andExpect {
-                    status { isOk() }
-                }
-        }
     }
 }

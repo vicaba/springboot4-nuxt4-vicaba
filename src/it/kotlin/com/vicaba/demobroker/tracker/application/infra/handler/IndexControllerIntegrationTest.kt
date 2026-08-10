@@ -1,4 +1,4 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.application.infra.handler
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

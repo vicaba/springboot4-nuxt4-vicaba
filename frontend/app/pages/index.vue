@@ -2,32 +2,32 @@
 import type { paths, operations } from '~/types/api'
 import { fetchApi } from '~/utils/api'
 
-type HelloPath = keyof Pick<paths, '/api/hello'>
-type HelloResponse = operations['getHello']['responses'][200]['content']['application/json']
+type HealthPath = keyof Pick<paths, '/api/status/health'>
+type HealthResponse = operations['getHealth']['responses'][200]['content']['application/json']
 
-const helloPath: HelloPath = '/api/hello'
+const healthPath: HealthPath = '/api/status/health'
 
-const message = ref<string | null>(null)
+const status = ref<string | null>(null)
 const pending = ref(true)
 const error = ref<string | null>(null)
 
-const fetchMessage = async () => {
+const fetchHealth = async () => {
   pending.value = true
   error.value = null
   try {
-    const data = await fetchApi(helloPath, {
+    const data = await fetchApi(healthPath, {
       timeout: 3000,
     })
-    message.value = data.message
+    status.value = data.status
   } catch (err: any) {
-    error.value = err?.message || 'Failed to fetch message from backend'
+    error.value = err?.message || 'Failed to fetch status from backend'
   } finally {
     pending.value = false
   }
 }
 
 onMounted(() => {
-  fetchMessage()
+  fetchHealth()
 })
 </script>
 
@@ -44,14 +44,14 @@ onMounted(() => {
         <span class="status-label">Backend API Status:</span>
         <span v-if="pending" class="status-value pending">Checking system connection...</span>
         <span v-else-if="error" class="status-value error">Offline ({{ error }})</span>
-        <span v-else class="status-value success">Online ({{ message }})</span>
+        <span v-else class="status-value success">Online ({{ status }})</span>
       </div>
 
       <div class="hero-actions">
         <NuxtLink to="/transactions" class="btn btn-primary">
           View Transactions List →
         </NuxtLink>
-        <button @click="fetchMessage" class="btn btn-secondary">
+        <button @click="fetchHealth" class="btn btn-secondary">
           Refresh API Status
         </button>
       </div>

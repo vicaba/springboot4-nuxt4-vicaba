@@ -1,4 +1,4 @@
-package com.example.demo
+package com.vicaba.demobroker.tracker.application.infra
 
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 
 @SpringBootTest
-class DemoApplicationTest {
+class TrackerApplicationTest {
     @Autowired
     private lateinit var context: ApplicationContext
 

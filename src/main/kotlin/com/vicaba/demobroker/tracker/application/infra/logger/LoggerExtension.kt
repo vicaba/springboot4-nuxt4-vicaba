@@ -1,4 +1,4 @@
-package com.example.demo.logger
+package com.vicaba.demobroker.tracker.application.infra.logger
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,6 +1,6 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.application.infra.handler
 
-import com.example.demo.config.ApplicationProperties
+import com.vicaba.demobroker.tracker.application.infra.config.ApplicationProperties
 import org.springframework.core.io.Resource
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType

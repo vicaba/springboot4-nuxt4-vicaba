@@ -34,7 +34,7 @@ Spring Boot 4 (Kotlin, Servlet/Tomcat, Java 25) backend serving a Nuxt 4 SSG fro
 - **Backend Architecture**: All API `@RestController` classes must live in `com.example.demo.handler` and implement their generated OpenAPI interface (`com.example.demo.api.*Api`).
 - **Frontend Code**: Nuxt 4 source code must live exclusively in `frontend/app/` (pages, components, layouts, types). Use generated OpenAPI types (`paths`, `operations`, `components`) from `~/types/api` and the typed `fetchApi` utility.
 - **Testing**: Use JUnit 5 (JUnit Jupiter) for Kotlin unit/integration tests. For frontend E2E browser tests, launch headless Chromium or system Google Chrome directly (do NOT attach to existing CDP sessions).
-- **Logging**: Use project extension `com.example.demo.logger.logger` instead of direct SLF4J logger imports.
+- **Logging**: Use project extension `com.vicaba.demobroker.tracker.application.infra.logger.logger` instead of direct SLF4J logger imports.
 - **Properties**: Bind properties using `@ConfigurationProperties` data classes with `application` prefix.
 
 ## Gotchas / Pitfalls
