@@ -82,7 +82,7 @@ openApiGenerate {
     configOptions.set(
         mapOf(
             "interfaceOnly" to "true",
-            "useSpringBoot3" to "true",
+            "useSpringBoot4" to "true",
             "useTags" to "true",
             "documentationProvider" to "none",
             "enumPropertyNaming" to "UPPERCASE",
