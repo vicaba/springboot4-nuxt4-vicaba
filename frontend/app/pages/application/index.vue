@@ -2,6 +2,11 @@
 import type { paths, operations } from '~/types/api'
 import { fetchApi } from '~/utils/api'
 
+definePageMeta({
+  path: '/',
+  alias: '/application',
+})
+
 type HealthPath = keyof Pick<paths, '/api/status/health'>
 type HealthResponse = operations['getHealth']['responses'][200]['content']['application/json']
 
