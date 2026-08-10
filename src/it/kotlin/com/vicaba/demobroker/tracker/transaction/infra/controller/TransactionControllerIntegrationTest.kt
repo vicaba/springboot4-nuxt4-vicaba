@@ -33,7 +33,7 @@ class TransactionControllerIntegrationTest {
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$[0].symbol") { value("AAPL") }
                 jsonPath("$[0].op") { value("BUY") }
-                jsonPath("$[0].quantity") { value(50) }
+                jsonPath("$[0].quantity") { value(100) }
             }
     }
 }

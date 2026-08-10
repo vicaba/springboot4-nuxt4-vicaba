@@ -46,7 +46,7 @@ components:
           type: string
           enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
           example: "UP"
-    MoneyDto:
+    Money:
       type: object
       required:
         - value
@@ -59,17 +59,17 @@ components:
         currency:
           type: string
           example: "USD"
-    ConvertedMoneyDto:
+    ConvertedMoney:
       type: object
       required:
         - value
         - original
       properties:
         value:
-          $ref: "#/components/schemas/MoneyDto"
+          $ref: "#/components/schemas/Money"
         original:
-          $ref: "#/components/schemas/MoneyDto"
-    ConvertedCurrencyDto:
+          $ref: "#/components/schemas/Money"
+    ConvertedCurrency:
       type: object
       required:
         - value
@@ -109,7 +109,7 @@ components:
           format: date-time
           example: "2026-08-03T10:00:00Z"
         currency:
-          $ref: "#/components/schemas/ConvertedCurrencyDto"
+          $ref: "#/components/schemas/ConvertedCurrency"
         op:
           type: string
           enum: [BUY, SELL]
@@ -119,9 +119,9 @@ components:
           format: int64
           example: 10
         price:
-          $ref: "#/components/schemas/ConvertedMoneyDto"
+          $ref: "#/components/schemas/ConvertedMoney"
         fee:
-          $ref: "#/components/schemas/ConvertedMoneyDto"
+          $ref: "#/components/schemas/ConvertedMoney"
         code:
           type: array
           items:

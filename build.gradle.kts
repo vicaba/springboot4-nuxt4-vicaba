@@ -78,6 +78,7 @@ openApiGenerate {
     )
     apiPackage.set("com.vicaba.demobroker.tracker.contract.api")
     modelPackage.set("com.vicaba.demobroker.tracker.contract.model")
+    modelNameSuffix.set("VM")
     configOptions.set(
         mapOf(
             "interfaceOnly" to "true",

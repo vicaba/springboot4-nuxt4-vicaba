@@ -1,6 +1,6 @@
 package com.vicaba.demobroker.tracker.application.infra.handler
 
-import com.vicaba.demobroker.tracker.contract.model.HealthResponse
+import com.vicaba.demobroker.tracker.contract.model.HealthResponseVM
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -25,7 +25,7 @@ class HealthControllerTest {
         val response = healthController.getHealth()
 
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(HealthResponse.Status.UP, response.body?.status)
+        assertEquals(HealthResponseVM.Status.UP, response.body?.status)
     }
 
     @Test
@@ -39,7 +39,7 @@ class HealthControllerTest {
         val response = healthController.getHealth()
 
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(HealthResponse.Status.DOWN, response.body?.status)
+        assertEquals(HealthResponseVM.Status.DOWN, response.body?.status)
     }
 
     @Test
@@ -53,6 +53,6 @@ class HealthControllerTest {
         val response = healthController.getHealth()
 
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(HealthResponse.Status.UNKNOWN, response.body?.status)
+        assertEquals(HealthResponseVM.Status.UNKNOWN, response.body?.status)
     }
 }

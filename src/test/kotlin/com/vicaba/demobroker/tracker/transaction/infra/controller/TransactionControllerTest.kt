@@ -18,7 +18,7 @@ class TransactionControllerTest {
         val response = transactionController.getTransactions()
         val transactions = response.body
         assertNotNull(transactions)
-        assertEquals(4, transactions!!.size)
+        assertEquals(5, transactions!!.size)
         assertEquals("AAPL", transactions[0].symbol)
         assertEquals("BUY", transactions[0].op.value)
     }
