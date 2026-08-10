@@ -1,10 +1,10 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.transaction.infra.controller
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
-class TransactionHandlerTest {
+class TransactionControllerTest {
     private val transactionController = TransactionController()
 
     @Test

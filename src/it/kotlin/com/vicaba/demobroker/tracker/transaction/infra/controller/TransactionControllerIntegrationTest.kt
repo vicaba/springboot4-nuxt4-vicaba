@@ -1,5 +1,6 @@
-package com.example.demo.handler
+package com.vicaba.demobroker.tracker.transaction.infra.controller
 
+import com.example.demo.DemoApplication
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +11,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(classes = [DemoApplication::class], webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class TransactionControllerIntegrationTest {
     @Autowired
     private lateinit var context: WebApplicationContext
