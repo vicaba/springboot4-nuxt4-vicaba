@@ -1,6 +1,6 @@
 package com.vicaba.demobroker.tracker.application.infra.config
 
-import com.vicaba.demobroker.tracker.application.infra.handler.IndexHandler
+import com.vicaba.demobroker.tracker.application.infra.controller.IndexHandler
 import com.vicaba.demobroker.tracker.application.infra.logger.logger
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.io.ResourceLoader

@@ -1,4 +1,4 @@
-package com.vicaba.demobroker.tracker.application.infra.handler
+package com.vicaba.demobroker.tracker.application.infra.controller
 
 import com.vicaba.demobroker.tracker.application.infra.config.ApplicationProperties
 import io.mockk.every
