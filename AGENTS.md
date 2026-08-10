@@ -8,7 +8,7 @@ Spring Boot 4 (Kotlin, Servlet/Tomcat, Java 25) backend serving a Nuxt 4 SSG fro
 
 ### Backend
 
-- `./gradlew openApiGenerate`: Generate Kotlin models (`com.example.demo.model.*`) from `openapi/api.yaml`.
+- `./gradlew openApiGenerate`: Generate Kotlin models (`com.vicaba.demobroker.tracker.contract.model.*`) from `openapi/api.yaml`.
 - `./gradlew test`: Run backend unit tests (JUnit 5).
 - `./gradlew integrationTest`: Run Spring Boot integration tests (JUnit 5 + MockMvc).
 - `./gradlew check`: Run full check pipeline (unit + integration tests).
@@ -31,7 +31,7 @@ Spring Boot 4 (Kotlin, Servlet/Tomcat, Java 25) backend serving a Nuxt 4 SSG fro
 ## Coding Standards
 
 - **OpenAPI Contract-First**: All API endpoints and data models MUST be defined in `openapi/api.yaml`. Generate DTOs (`./gradlew openApiGenerate` and `npm run generate:types`) before implementing features. Prefer backend-driven computed properties rather than computing them at the frontend; for example, the size of a list comes from backend rather than computed at the frontend.
-- **Backend Architecture**: All API `@RestController` classes must live in `com.example.demo.handler` and implement their generated OpenAPI interface (`com.example.demo.api.*Api`).
+- **Backend Architecture**: All API `@RestController` classes must implement their generated OpenAPI interface (`com.vicaba.demobroker.tracker.contract.api.*Api`).
 - **Frontend Code**: Nuxt 4 source code must live exclusively in `frontend/app/` (pages, components, layouts, types). Use generated OpenAPI types (`paths`, `operations`, `components`) from `~/types/api` and the typed `fetchApi` utility.
 - **Testing**: Use JUnit 5 (JUnit Jupiter) for Kotlin unit/integration tests. For frontend E2E browser tests, launch headless Chromium or system Google Chrome directly (do NOT attach to existing CDP sessions).
 - **Logging**: Use project extension `com.vicaba.demobroker.tracker.application.infra.logger.logger` instead of direct SLF4J logger imports.

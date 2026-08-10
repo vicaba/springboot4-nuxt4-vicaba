@@ -1,8 +1,8 @@
 package com.vicaba.demobroker.tracker.application.infra.handler
 
-import com.example.demo.api.HealthApi
-import com.example.demo.model.HealthResponse
 import com.vicaba.demobroker.tracker.application.infra.logger.logger
+import com.vicaba.demobroker.tracker.contract.api.HealthApi
+import com.vicaba.demobroker.tracker.contract.model.HealthResponse
 import org.springframework.boot.health.actuate.endpoint.HealthEndpoint
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

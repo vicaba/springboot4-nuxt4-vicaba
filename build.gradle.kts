@@ -76,8 +76,8 @@ openApiGenerate {
             .get()
             .asFile.path,
     )
-    apiPackage.set("com.example.demo.api")
-    modelPackage.set("com.example.demo.model")
+    apiPackage.set("com.vicaba.demobroker.tracker.contract.api")
+    modelPackage.set("com.vicaba.demobroker.tracker.contract.model")
     configOptions.set(
         mapOf(
             "interfaceOnly" to "true",
