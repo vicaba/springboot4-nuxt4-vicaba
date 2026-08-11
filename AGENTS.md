@@ -1,46 +1,65 @@
 # AGENTS.md
 
-## Project Overview
+## 1. Project Context & Tech Stack
+- **Core Purpose**: Demo broker tracking system featuring a Spring Boot 4 backend serving a Nuxt 4 SSG frontend, managed via a Gradle unified build pipeline.
+- **Tech Stack**:
+  - **Backend**: Kotlin, Java 25, Spring Boot 4 (Servlet/Tomcat), JUnit 5.
+  - **Frontend**: Nuxt 4 (Vue 3, TypeScript), Playwright (E2E testing).
+  - **Specification**: OpenAPI 3 (`openapi/api.yaml`) as the single source of truth.
+- **Directory Structure & Core Modules**:
+  - `openapi/api.yaml`: OpenAPI contract.
+  - `src/main/kotlin/com/vicaba/demobroker/tracker/`: Kotlin backend vertical slices (`application/`, `transaction/`, `currency/`).
+  - `frontend/app/`: Nuxt 4 frontend source (`pages/`, `components/`, `layouts/`, `types/`, `utils/`).
+  - `frontend/.output/` & `src/main/resources/static/`: Generated build output directories.
 
-Spring Boot 4 (Kotlin, Servlet/Tomcat, Java 25) backend serving a Nuxt 4 SSG frontend, managed by a Gradle unified build pipeline with a single-source-of-truth OpenAPI 3 specification (`openapi/api.yaml`).
+## 2. Guardrails & Constraints
+- **Protected Files**: NEVER edit or commit generated artifacts in `frontend/.output/` or `src/main/resources/static/`.
+- **Forbidden Actions & Anti-Patterns**:
+  - NEVER bypass the Gradle frontend task chain (`frontendInstall -> frontendGenerate -> copyFrontend -> processResources`).
+  - NEVER import SLF4J loggers directly.
+  - NEVER compute list sizes or state in frontend when backend can provide computed properties.
+  - NEVER attach Playwright E2E tests to existing CDP sessions or use unsigned Homebrew binaries (causes macOS Gatekeeper failures).
+- **Human Input Scenarios**: Stop and request human confirmation before executing breaking OpenAPI changes, modifying task chains, or running destructive repository commands.
 
-## Commands
+## 3. Build, Test, and Lint Commands
+- **Environment & Configuration**:
+  - Active profile: `SPRING_PROFILES_ACTIVE=dev` (default).
+  - API base path: `application.api-base-path=/api` (default).
+  - Chrome binary: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
+- **Backend Commands**:
+  - Model Generation: `./gradlew openApiGenerate` (generates `com.vicaba.demobroker.tracker.contract.model.*`).
+  - Unit Tests: `./gradlew test` (JUnit 5).
+  - Integration Tests: `./gradlew integrationTest` (JUnit 5 + MockMvc).
+  - Check Pipeline: `./gradlew check` (runs unit and integration tests).
+  - Code Formatting: `./gradlew spotlessApply` (ktlint and prettier).
+  - Local Server: `./gradlew bootRun --args='--spring.profiles.active=dev'` (runs on port `18080`).
+  - Full App Build: `./gradlew assemble` (generates OpenAPI, builds frontend, packages runnable JAR).
+- **Frontend Commands**:
+  - Dependency Install: `cd frontend && npm ci`.
+  - Type Generation: `cd frontend && npm run generate:types` (generates `app/types/api.d.ts`).
+  - Dev Server: `cd frontend && npm run dev` (runs on port `3000`, proxies `/api` to `http://localhost:18080`).
+  - Static Generation: `cd frontend && npm run generate` (outputs to `frontend/.output/public`).
+  - E2E Tests: `cd frontend && npm run test:e2e` (Playwright via Chromium or system Google Chrome).
+- **Docker Command**:
+  - Full Stack Container: `docker compose up --build` (runs on port `18080`).
 
-### Backend
-
-- `./gradlew openApiGenerate`: Generate Kotlin models (`com.vicaba.demobroker.tracker.contract.model.*`) from `openapi/api.yaml`.
-- `./gradlew test`: Run backend unit tests (JUnit 5).
-- `./gradlew integrationTest`: Run Spring Boot integration tests (JUnit 5 + MockMvc).
-- `./gradlew check`: Run full check pipeline (unit + integration tests).
-- `./gradlew spotlessApply`: Auto-format Kotlin (`ktlint`) and config/doc files (`prettier`).
-- `./gradlew bootRun --args='--spring.profiles.active=dev'`: Run backend locally on port `18080`.
-- `./gradlew assemble`: Build full app JAR (generates OpenAPI, builds frontend, packages into static resources).
-
-### Frontend
-
-- `cd frontend && npm ci`: Install frontend dependencies.
-- `cd frontend && npm run generate:types`: Generate TypeScript types (`app/types/api.d.ts`) from `openapi/api.yaml`.
-- `cd frontend && npm run dev`: Run Nuxt dev server on port `3000` (proxies `/api` to `http://localhost:18080`).
-- `cd frontend && npm run generate`: Generate static site output to `frontend/.output/public`.
-- `cd frontend && npm run test:e2e`: Run E2E Playwright tests using headless Chromium or system Google Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`).
-
-### Docker
-
-- `docker compose up --build`: Build and run full stack on port `18080`.
-
-## Coding Standards
-
-- **OpenAPI Contract-First**: All API endpoints and data models MUST be defined in `openapi/api.yaml`. Generate VMs (`./gradlew openApiGenerate` and `npm run generate:types`) before implementing features. Prefer backend-driven computed properties rather than computing them at the frontend; for example, the size of a list comes from backend rather than computed at the frontend.
-- **Backend Architecture**: All API `@RestController` classes must implement their generated OpenAPI interface (`com.vicaba.demobroker.tracker.contract.api.*Api`).
-- **Frontend Code**: Nuxt 4 source code must live exclusively in `frontend/app/` (pages, components, layouts, types). Use generated OpenAPI types (`paths`, `operations`, `components`) from `~/types/api` and the typed `fetchApi` utility.
-- **Project Structure**: The project must be structured using vertical slicing. Slices do not need to be completely independent but most of their components should be decoupled from other slices. Keep the public/exposed surface of each slice minimal and do not expose internal components of a slice to other slices. Most slices/domains will appear in frontend and backend (for example the transactions slice has both transaction repository and pages/components to display transactions). 
-- **Testing**: Use JUnit 5 (JUnit Jupiter) for Kotlin unit/integration tests. For frontend E2E browser tests, launch headless Chromium or system Google Chrome directly (do NOT attach to existing CDP sessions).
-- **Logging**: Use project extension `com.vicaba.demobroker.tracker.application.infra.logger.logger` instead of direct SLF4J logger imports.
-- **Properties**: Bind properties using `@ConfigurationProperties` data classes with `application` prefix.
-
-## Gotchas / Pitfalls
-
-- **Build Artifact Exclusions**: NEVER manually commit or edit `frontend/.output/` or `src/main/resources/static/`. They are generated build artifacts.
-- **Gradle Task Chain**: NEVER bypass `copyFrontend`. `frontendInstall -> frontendGenerate -> copyFrontend -> processResources` must remain intact for the JAR build.
-- **API Route Base Path**: All API endpoints MUST start with `/api` (configured via `application.api-base-path`). Non-API routes are intercepted by `SpaFallbackConfig` and served as SPA/static HTML.
-- **Mac Gatekeeper & Playwright**: When running Playwright E2E browser tests, use system Google Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`) or Playwright bundled Chromium rather than unsigned Homebrew binaries that fail macOS Gatekeeper.
+## 4. Coding Standards & Patterns
+- **OpenAPI Contract-First**:
+  - Define all endpoints and models in `openapi/api.yaml` before code changes.
+  - Generate models/types (`./gradlew openApiGenerate` and `npm run generate:types`) prior to implementation.
+  - Prefer backend-driven computed properties over frontend calculations.
+- **Backend Architecture**:
+  - `@RestController` classes must implement their generated OpenAPI interface (`com.vicaba.demobroker.tracker.contract.api.*Api`), e.g., `TransactionController.kt`.
+  - Use project logger extension `com.vicaba.demobroker.tracker.application.infra.logger.logger`.
+  - Bind configuration properties with `@ConfigurationProperties` using `application` prefix (e.g., `ApplicationConfig.kt`).
+- **Frontend Standards**:
+  - Code must reside exclusively inside `frontend/app/`.
+  - Import OpenAPI types (`paths`, `operations`, `components`) from `~/types/api` and use typed `fetchApi` utility.
+- **Architecture & Modularity**:
+  - Structure code using vertical slicing (e.g., `transaction`, `currency`).
+  - Decouple slices, minimize exposed surfaces, and encapsulate internal components.
+- **Routing & Base Path**:
+  - All API routes MUST start with `/api`. Non-API routes are handled via `SpaFallbackConfig` to serve static/SPA HTML.
+- **Testing Standards**:
+  - Backend: Use JUnit 5 (JUnit Jupiter) for unit and integration testing.
+  - Frontend: Use Playwright launching headless Chromium or system Google Chrome directly.
