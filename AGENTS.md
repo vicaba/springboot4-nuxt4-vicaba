@@ -62,4 +62,4 @@
   - All API routes MUST start with `/api`. Non-API routes are handled via `SpaFallbackConfig` to serve static/SPA HTML.
 - **Testing Standards**:
   - Backend: Use JUnit 5 (JUnit Jupiter) for unit and integration testing.
-  - Frontend: Use Playwright launching headless Chromium or system Google Chrome directly.
+  - Frontend: Use Playwright launching headless Chromium or system Google Chrome directly. Do not create e2e tests umless stated explicitly.
