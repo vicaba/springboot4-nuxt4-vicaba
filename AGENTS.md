@@ -11,6 +11,7 @@
   - `openapi/api.yaml`: OpenAPI contract.
   - `src/main/kotlin/com/vicaba/demobroker/tracker/`: Kotlin backend vertical slices (`application/`, `transaction/`, `currency/`).
   - `frontend/app/`: Nuxt 4 frontend source (`pages/`, `components/`, `layouts/`, `types/`, `utils/`).
+  - `e2e/`: Standalone Playwright end-to-end test suite (`e2e/package.json`, `e2e/test-e2e.js`), decoupled from `frontend/`.
   - `frontend/.output/` & `src/main/resources/static/`: Generated build output directories.
 
 ## 2. Guardrails & Constraints
@@ -43,7 +44,9 @@
   - Type Generation: `cd frontend && npm run generate:types` (generates `app/types/api.d.ts`).
   - Dev Server: `cd frontend && npm run dev` (runs on port `3000`, proxies `/api` to `http://localhost:18080`).
   - Static Generation: `cd frontend && npm run generate` (outputs to `frontend/.output/public`).
-  - E2E Tests: `cd frontend && npm run test:e2e` (Playwright via Chromium or system Google Chrome).
+- **E2E Commands**:
+  - Dependency Install: `cd e2e && npm ci`.
+  - E2E Tests: `cd e2e && npm test` (Playwright via Chromium or system Google Chrome).
 - **Docker Command**:
   - Full Stack Container: `docker compose up --build` (runs on port `18080`).
 
@@ -67,4 +70,5 @@
   - All API routes MUST start with `/api`. Non-API routes are handled via `SpaFallbackConfig` to serve static/SPA HTML.
 - **Testing Standards**:
   - Backend: Use JUnit 5 (JUnit Jupiter) for unit and integration testing.
-  - Frontend: Use Playwright launching headless Chromium or system Google Chrome directly. Do not create e2e tests umless stated explicitly.
+  - Frontend: Focus on Vue components and client-side logic inside `frontend/app/`.
+  - E2E: Stored in `e2e/` at project root to test full-stack interaction (backend + frontend). Use Playwright launching headless Chromium or system Google Chrome directly. Do not create e2e tests unless stated explicitly.

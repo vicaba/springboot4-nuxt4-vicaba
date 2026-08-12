@@ -1,0 +1,11 @@
+{
+  "name": "e2e",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node test-e2e.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.1"
+  }
+}

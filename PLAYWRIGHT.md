@@ -39,7 +39,7 @@ const browser = await chromium.launch({
 Download and cache the headless Chromium browser binary once globally:
 
 ```bash
-cd frontend
+cd e2e
 npm install
 npx playwright install chromium
 ```
@@ -67,33 +67,11 @@ npm run dev
 
 ### Step 3: Execute Playwright Verification Script
 
-Run the automated Playwright script using Node.js:
+Run the automated Playwright script using npm inside the `e2e` directory:
 
 ```bash
-node -e "
-import { chromium } from 'playwright';
-
-(async () => {
-  const browser = await chromium.launch({
-    headless: true,
-    // Optional: executablePath: '/Applications/Chromium.app/Contents/MacOS/Chromium'
-  });
-  const page = await browser.newPage();
-
-  // Test Home Page
-  await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
-  console.log('Home Page Title:', await page.textContent('h1'));
-  await page.screenshot({ path: 'home.png', fullPage: true });
-
-  // Test Transactions Page
-  await page.goto('http://localhost:3000/transactions', { waitUntil: 'networkidle' });
-  await page.waitForSelector('.data-table');
-  console.log('Rendered Page Content:\n', await page.innerText('body'));
-  await page.screenshot({ path: 'transactions.png', fullPage: true });
-
-  await browser.close();
-})();
-"
+cd e2e
+npm test
 ```
 
 ---

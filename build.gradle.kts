@@ -193,6 +193,7 @@ spotless {
             "**/.idea/**",
             "**/.claude/**",
             "**/.output/**",
+            "**/node_modules/**",
             "**/bin/**",
             "**/build/**",
             "**/gradle/**",
