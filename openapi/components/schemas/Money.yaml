@@ -1,0 +1,12 @@
+type: object
+required:
+  - value
+  - currency
+properties:
+  value:
+    type: number
+    format: double
+    example: 150.50
+  currency:
+    type: string
+    example: "USD"

@@ -1,0 +1,11 @@
+type: object
+required:
+  - value
+  - original
+properties:
+  value:
+    type: string
+    example: "USD"
+  original:
+    type: string
+    example: "EUR"

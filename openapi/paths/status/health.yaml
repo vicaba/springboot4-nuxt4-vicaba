@@ -1,0 +1,15 @@
+get:
+  tags:
+    - Health
+  summary: Get Actuator Health Status
+  operationId: getHealth
+  responses:
+    "200":
+      description: Successful response containing the health status
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/HealthResponse.yaml"
+        text/plain:
+          schema:
+            type: string

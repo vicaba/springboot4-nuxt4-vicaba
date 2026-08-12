@@ -1,0 +1,9 @@
+type: object
+required:
+  - value
+  - original
+properties:
+  value:
+    $ref: "./Money.yaml"
+  original:
+    $ref: "./Money.yaml"

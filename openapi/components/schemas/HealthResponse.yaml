@@ -1,0 +1,8 @@
+type: object
+required:
+  - status
+properties:
+  status:
+    type: string
+    enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
+    example: "UP"

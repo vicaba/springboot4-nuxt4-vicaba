@@ -1,6 +1,7 @@
 # AGENTS.md
 
 ## 1. Project Context & Tech Stack
+
 - **Core Purpose**: Demo broker tracking system featuring a Spring Boot 4 backend serving a Nuxt 4 SSG frontend, managed via a Gradle unified build pipeline.
 - **Tech Stack**:
   - **Backend**: Kotlin, Java 25, Spring Boot 4 (Servlet/Tomcat), JUnit 5.
@@ -13,6 +14,7 @@
   - `frontend/.output/` & `src/main/resources/static/`: Generated build output directories.
 
 ## 2. Guardrails & Constraints
+
 - **Protected Files**: NEVER edit or commit generated artifacts in `frontend/.output/` or `src/main/resources/static/`.
 - **Forbidden Actions & Anti-Patterns**:
   - NEVER bypass the Gradle frontend task chain (`frontendInstall -> frontendGenerate -> copyFrontend -> processResources`).
@@ -22,17 +24,19 @@
 - **Human Input Scenarios**: Stop and request human confirmation before executing breaking OpenAPI changes, modifying task chains, or running destructive repository commands.
 
 ## 3. Build, Test, and Lint Commands
+
 - **Environment & Configuration**:
   - Active profile: `SPRING_PROFILES_ACTIVE=dev` (default).
   - API base path: `application.api-base-path=/api` (default).
   - Chrome binary: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
 - **Backend Commands**:
+  - OpenAPI Linting: `./gradlew openApiLint` (runs Spectral linter on `openapi/api.yaml`).
   - Model Generation: `./gradlew openApiGenerate` (generates `com.vicaba.demobroker.tracker.contract.model.*`).
   - Unit Tests: `./gradlew test` (JUnit 5).
   - Integration Tests: `./gradlew integrationTest` (JUnit 5 + MockMvc).
-  - Check Pipeline: `./gradlew check` (runs unit and integration tests).
+  - Check Pipeline: `./gradlew check` (runs openApiLint, unit tests, and integration tests).
   - Code Formatting: `./gradlew spotlessApply` (ktlint and prettier).
-  - Local Server: `./gradlew bootRun --args='--spring.profiles.active=dev'` (runs on port `18080`).
+  - Local Server: `./gradlew bootRun --args='--spring.profiles.active=dev'` (runs on port `18080`, Swagger UI served at `/swagger-ui.html`).
   - Full App Build: `./gradlew assemble` (generates OpenAPI, builds frontend, packages runnable JAR).
 - **Frontend Commands**:
   - Dependency Install: `cd frontend && npm ci`.
@@ -44,6 +48,7 @@
   - Full Stack Container: `docker compose up --build` (runs on port `18080`).
 
 ## 4. Coding Standards & Patterns
+
 - **OpenAPI Contract-First**:
   - Define all endpoints and models in `openapi/api.yaml` before code changes.
   - Generate models/types (`./gradlew openApiGenerate` and `npm run generate:types`) prior to implementation.

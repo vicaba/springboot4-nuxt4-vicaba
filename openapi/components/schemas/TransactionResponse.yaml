@@ -1,0 +1,46 @@
+type: object
+required:
+  - id
+  - account
+  - symbol
+  - date
+  - currency
+  - op
+  - quantity
+  - price
+  - fee
+  - code
+properties:
+  id:
+    type: string
+    example: "tx-12345"
+  account:
+    type: string
+    example: "brokerage-acc-1"
+  symbol:
+    type: string
+    example: "AAPL"
+  date:
+    type: string
+    format: date-time
+    example: "2026-08-03T10:00:00Z"
+  currency:
+    $ref: "./ConvertedCurrency.yaml"
+  op:
+    type: string
+    enum: [BUY, SELL]
+    example: "BUY"
+  quantity:
+    type: integer
+    format: int64
+    example: 10
+  price:
+    $ref: "./ConvertedMoney.yaml"
+  fee:
+    $ref: "./ConvertedMoney.yaml"
+  code:
+    type: array
+    items:
+      type: string
+      enum: [OPEN, CLOSE, UNKNOWN]
+    example: ["OPEN"]

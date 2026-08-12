@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.springdoc.openapi.starter.webmvc.ui)
     implementation(libs.swagger.annotations)
     implementation(libs.jakarta.validation.api)
 
@@ -135,7 +136,12 @@ tasks.withType<BootJar>().configureEach {
     archiveFileName.set("app.jar")
 }
 
+val openApiLint by tasks.registering(Exec::class) {
+    commandLine("npx", "--yes", "@stoplight/spectral-cli", "lint", "openapi/api.yaml")
+}
+
 tasks.named("check") {
+    dependsOn(openApiLint)
     dependsOn(testing.suites.named("integrationTest"))
 }
 

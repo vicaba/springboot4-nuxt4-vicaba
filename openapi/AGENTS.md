@@ -38,9 +38,9 @@ root/
 
 Keep your `paths` light by decoupling data definitions and response structures into the `components` object.
 
-* **Decouple Schemas:** Define models in `components/schemas` using **PascalCase** (e.g., `UserProfile`, `ErrorResponse`). Avoid inline anonymous schema objects inside path operations.
-* **Standardize Common Parameters:** Extract query parameters like page limits, filters, or custom tracing headers into `components/parameters`.
-* **Centralize Responses:** Standardize common HTTP error responses (e.g., `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`) in `components/responses` so error formats remain uniform across the API.
+- **Decouple Schemas:** Define models in `components/schemas` using **PascalCase** (e.g., `UserProfile`, `ErrorResponse`). Avoid inline anonymous schema objects inside path operations.
+- **Standardize Common Parameters:** Extract query parameters like page limits, filters, or custom tracing headers into `components/parameters`.
+- **Centralize Responses:** Standardize common HTTP error responses (e.g., `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`) in `components/responses` so error formats remain uniform across the API.
 
 ---
 
@@ -48,13 +48,13 @@ Keep your `paths` light by decoupling data definitions and response structures i
 
 Consistency across paths, properties, and parameters improves developer experience and SDK generation quality.
 
-| Context | Recommended Convention | Example |
-| :--- | :--- | :--- |
-| **Path URIs** | Kebab-case, plural nouns | `/user-profiles/{profile_id}/orders` |
-| **Schema Names** | PascalCase | `UserProfile`, `PaymentIntent` |
-| **JSON Properties** | camelCase | `firstName` |
-| **Path Variables** | camelCase | `{userId}` |
-| **Header Names** | Train-Case | `X-Request-ID` |
+| Context             | Recommended Convention   | Example                              |
+| :------------------ | :----------------------- | :----------------------------------- |
+| **Path URIs**       | Kebab-case, plural nouns | `/user-profiles/{profile_id}/orders` |
+| **Schema Names**    | PascalCase               | `UserProfile`, `PaymentIntent`       |
+| **JSON Properties** | camelCase                | `firstName`                          |
+| **Path Variables**  | camelCase                | `{userId}`                           |
+| **Header Names**    | Train-Case               | `X-Request-ID`                       |
 
 ---
 
@@ -62,10 +62,10 @@ Consistency across paths, properties, and parameters improves developer experien
 
 Do not rely solely on structural types; clear documentation reduces integration friction.
 
-* **Provide Top-Level and Property Examples:** Use `example` (or `examples` for multiple scenarios) at both the property level and the schema level.
-* **Use Rich Descriptions:** Use GitHub-Flavored Markdown in `description` fields to explain business logic, constraints, and edge cases.
-* **Define `operationId` Uniformly:** Ensure every path operation has a unique `operationId` formatted predictably (e.g., `getUsers`, `createOrder`). SDK generators use this field to name SDK methods.
-* **Group Endpoints with `tags`:** Organize paths using `tags` to control how documentation renderers (like Swagger UI) group operations. Define global tag metadata in `openapi.yaml` with descriptions.
+- **Provide Top-Level and Property Examples:** Use `example` (or `examples` for multiple scenarios) at both the property level and the schema level.
+- **Use Rich Descriptions:** Use GitHub-Flavored Markdown in `description` fields to explain business logic, constraints, and edge cases.
+- **Define `operationId` Uniformly:** Ensure every path operation has a unique `operationId` formatted predictably (e.g., `getUsers`, `createOrder`). SDK generators use this field to name SDK methods.
+- **Group Endpoints with `tags`:** Organize paths using `tags` to control how documentation renderers (like Swagger UI) group operations. Define global tag metadata in `openapi.yaml` with descriptions.
 
 ```yaml
 # Example: Well-annotated operation
@@ -77,19 +77,19 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: '#/components/parameters/UserId'
+        - $ref: "#/components/parameters/UserId"
       responses:
-        '200':
+        "200":
           description: User retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
               examples:
                 activeUser:
-                  $ref: '#/components/examples/ActiveUserExample.json'
-        '404':
-          $ref: '#/components/responses/404NotFound'
+                  $ref: "#/components/examples/ActiveUserExample.json"
+        "404":
+          $ref: "#/components/responses/404NotFound"
 ```
 
 ---
@@ -98,5 +98,5 @@ paths:
 
 Treat your OpenAPI specification as source code and enforce standards programmatically.
 
-* **Enforce Governance with Spectral:** Use a linter like [Spectral](https://stoplight.io/open-source/spectral) to enforce rules (e.g., requiring descriptions for all parameters, enforcing property naming formats, checking for missing examples).
-* **Contract Testing:** Use the OpenAPI spec as a single source of truth to drive server implementation validation or mock server creation.
+- **Enforce Governance with Spectral:** Use [Spectral](https://stoplight.io/open-source/spectral) to enforce rules programmatically via `.spectral.yaml` (run `npx --yes @stoplight/spectral-cli lint openapi/api.yaml` or `./gradlew openApiLint` / `./gradlew check`).
+- **Contract Testing & Documentation:** Use the OpenAPI spec as a single source of truth to drive server implementation validation, model/SDK generation (`./gradlew openApiGenerate`), and Swagger UI visualization (`/swagger-ui.html`).
