@@ -23,13 +23,13 @@ class IndexControllerIntegrationTest {
     }
 
     @Test
-    fun `GET root with Accept text html should return index file content with OK status`() {
+    fun `GET root with Accept text html should forward to index html with OK status`() {
         mockMvc
             .get("/") {
                 accept = MediaType.TEXT_HTML
             }.andExpect {
                 status { isOk() }
-                content { contentTypeCompatibleWith(MediaType.TEXT_HTML) }
+                forwardedUrl("index.html")
             }
     }
 
@@ -45,12 +45,50 @@ class IndexControllerIntegrationTest {
     }
 
     @Test
-    fun `GET root with Accept text html should return application properties index file`() {
+    fun `GET swagger-ui html should redirect to swagger-ui index html`() {
         mockMvc
-            .get("/") {
-                accept = MediaType.TEXT_HTML
-            }.andExpect {
+            .get("/swagger-ui.html")
+            .andExpect {
+                status { is3xxRedirection() }
+                header { string("Location", "/swagger-ui/index.html") }
+            }
+    }
+
+    @Test
+    fun `GET swagger-ui index html should return OK status with text html`() {
+        mockMvc
+            .get("/swagger-ui/index.html")
+            .andExpect {
                 status { isOk() }
+                content { contentTypeCompatibleWith(MediaType.TEXT_HTML) }
+            }
+    }
+
+    @Test
+    fun `GET v3 api-docs should return OK status with application json`() {
+        mockMvc
+            .get("/v3/api-docs")
+            .andExpect {
+                status { isOk() }
+                content { contentTypeCompatibleWith(MediaType.APPLICATION_JSON) }
+            }
+    }
+
+    @Test
+    fun `GET nonexistent api route should return 404 Not Found`() {
+        mockMvc
+            .get("/api/nonexistent")
+            .andExpect {
+                status { isNotFound() }
+            }
+    }
+
+    @Test
+    fun `GET missing static file should return 404 Not Found`() {
+        mockMvc
+            .get("/nonexistent.js")
+            .andExpect {
+                status { isNotFound() }
             }
     }
 }

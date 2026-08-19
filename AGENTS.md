@@ -67,7 +67,7 @@
   - Structure code using vertical slicing (e.g., `transaction`, `currency`).
   - Decouple slices, minimize exposed surfaces, and encapsulate internal components.
 - **Routing & Base Path**:
-  - All API routes MUST start with `/api`. Non-API routes are handled via `SpaFallbackConfig` to serve static/SPA HTML.
+  - All API routes MUST start with `/api`. Non-API routes are handled via `WebMvcConfig` and `SpaResourceResolver` to serve static/SPA HTML.
 - **Documentation File Paths & OKF Standard**:
   - When requested to develop or modify something, update related documentation (e.g. when a feature is added/removed, update the feature slice README.md). This applies to the whole project.
   - File paths referenced in any kind of documentation (e.g. `README.md`, `AGENTS.md`, design/implementation docs) MUST ALWAYS be relative paths, unless explicitly stated otherwise.
