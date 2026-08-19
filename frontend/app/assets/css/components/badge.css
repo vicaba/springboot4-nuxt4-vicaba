@@ -1,0 +1,93 @@
+/* Badges & Pills */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.badge-sm {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.badges-group {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.badge-indigo {
+  background: var(--color-indigo-50);
+  color: var(--color-indigo-600);
+}
+
+.badge-emerald,
+.op-buy {
+  background: var(--color-emerald-100);
+  color: var(--color-emerald-700);
+}
+
+.badge-red,
+.op-sell {
+  background: var(--color-red-100);
+  color: var(--color-red-700);
+}
+
+.badge-amber,
+.code-badge.close {
+  background: var(--color-amber-100);
+  color: var(--color-amber-700);
+}
+
+.badge-sky,
+.code-badge.open {
+  background: var(--color-sky-100);
+  color: var(--color-sky-700);
+}
+
+.badge-slate,
+.stock-badge,
+.code-badge.unknown {
+  background: var(--color-slate-100);
+  color: var(--color-slate-700);
+}
+
+.badge-secondary {
+  background: var(--color-slate-100);
+  color: var(--color-slate-600);
+}
+
+.op-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.stock-badge {
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.code-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+

@@ -1,0 +1,72 @@
+/* Form Controls & Inputs */
+.search-input,
+.input-text {
+  width: 300px;
+  max-width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-slate-300);
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-input:focus,
+.input-text:focus {
+  border-color: var(--color-indigo-600);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  background: var(--color-slate-100);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-slate-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn.active {
+  background: var(--color-indigo-600);
+  color: white;
+}
+
+.select-control {
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-slate-300);
+  background-color: var(--color-white);
+  color: var(--color-slate-700);
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select-control:focus {
+  border-color: var(--color-indigo-600);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.date-range-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selector-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-slate-700);
+}

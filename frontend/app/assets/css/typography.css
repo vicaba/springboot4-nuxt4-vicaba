@@ -1,0 +1,31 @@
+/* Page Headers & Typography */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.page-title,
+.heading-xl {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-slate-900);
+  margin: 0 0 0.4rem 0;
+}
+
+.page-description,
+.text-muted {
+  color: var(--color-slate-500);
+  margin: 0;
+}
+

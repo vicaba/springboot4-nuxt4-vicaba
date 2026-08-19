@@ -1,0 +1,168 @@
+/* Data Table & Table Card */
+.table-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-slate-200);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table-header-bar {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-slate-200);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.table-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.5rem;
+  border-top: 1px solid var(--color-slate-200);
+  background-color: var(--color-slate-50);
+}
+
+.page-info {
+  font-size: 0.875rem;
+  color: var(--color-slate-500);
+  font-weight: 500;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  background: var(--color-slate-50);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-slate-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-slate-200);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--color-slate-100);
+  font-size: 0.925rem;
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background: var(--color-slate-50);
+}
+
+/* Audit Table Specialized Sizing & Alignment */
+.audit-table th {
+  padding: 0.55rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-slate-600);
+  background: var(--color-slate-50);
+  border-bottom: 1px solid var(--color-slate-200);
+  white-space: nowrap;
+}
+
+.audit-table td {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.825rem;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-slate-100);
+}
+
+.audit-table .target-row {
+  background: white;
+}
+
+.audit-table .mod-row {
+  background: rgba(248, 250, 252, 0.7);
+  color: var(--color-slate-500);
+}
+
+.audit-table .mod-row:hover {
+  background: var(--color-slate-100);
+}
+
+.audit-table .badge-sm {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.id-cell {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.8rem;
+  color: var(--color-slate-500);
+}
+
+.account-cell {
+  font-weight: 600;
+  color: var(--color-slate-800);
+}
+
+.number-cell {
+  font-weight: 600;
+}
+
+.price-primary {
+  font-weight: 700;
+  color: var(--color-slate-900);
+}
+
+.price-secondary {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+.date-cell {
+  font-size: 0.825rem;
+  color: var(--color-slate-500);
+}
+
+.sub-date {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+
+

@@ -68,6 +68,10 @@
   - Decouple slices, minimize exposed surfaces, and encapsulate internal components.
 - **Routing & Base Path**:
   - All API routes MUST start with `/api`. Non-API routes are handled via `SpaFallbackConfig` to serve static/SPA HTML.
+- **Documentation File Paths & OKF Standard**:
+  - When requested to develop or modify something, update related documentation (e.g. when a feature is added/removed, update the feature slice README.md). This applies to the whole project.
+  - File paths referenced in any kind of documentation (e.g. `README.md`, `AGENTS.md`, design/implementation docs) MUST ALWAYS be relative paths, unless explicitly stated otherwise.
+  - When creating or updating module or feature slice documentation (`README.md`), follow the OKF (Open Knowledge Format) specification in [`OKF_GUIDE.md`](OKF_GUIDE.md).
 - **Testing Standards**:
   - Backend: Use JUnit 5 (JUnit Jupiter) for unit and integration testing.
   - Frontend: Focus on Vue components and client-side logic inside `frontend/app/`.
